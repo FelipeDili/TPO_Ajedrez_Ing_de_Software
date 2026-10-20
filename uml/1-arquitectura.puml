@@ -1,0 +1,207 @@
+@startuml 1-arquitectura
+!include estilo.iuml
+
+title 1. Arquitectura: consola (adaptador), partida, comandos y fábricas
+
+package "ajedrez.consola  (ADAPTADOR)" #EEF3FA {
+  class Main <<composition root>> {
+    + {static} main(args : String[]) : void
+  }
+  class MenuConsola {
+    - teclado : BufferedReader
+    - salida : PrintStream
+    - tema : Tema
+    + MenuConsola(teclado, salida, temaInicial : Tema)
+    + elegir() : boolean
+    + tema() : Tema
+  }
+  class PartidaConsola {
+    - teclado : BufferedReader
+    - salida : PrintStream
+    + PartidaConsola(teclado, salida, partida : Partida, ui : ConsolaUI)
+    + jugar() : boolean
+    ~ prompt() : String
+    ~ {static} promocionDeLetra(respuesta : String) : Promocion
+  }
+  class ConsolaUI {
+    - salida : PrintStream
+    - tema : Tema
+    + ConsolaUI(salida : PrintStream, tema : Tema)
+    + alTableroActualizado(tablero : Tablero) : void
+    + alJaque(colorEnPeligro : Color) : void
+    + alError(mensaje : String) : void
+    + alFinDePartida(resultado : String) : void
+  }
+  enum Tema {
+    UNICODE_COLOR
+    ASCII
+  }
+}
+
+package "ajedrez.core.partida  (NÚCLEO)" #FFF8EC {
+  interface EntradaAjedrez <<puerto de entrada>> {
+    + intentarMovimiento(origen : Posicion, destino : Posicion, promocion : Promocion) : void
+    + intentarMovimiento(origen : Posicion, destino : Posicion) : void  {default}
+    + deshacerJugada() : void
+    + rehacerJugada() : void
+  }
+  interface NotificadorUI <<puerto de salida>> {
+    + alTableroActualizado(tablero : Tablero) : void
+    + alJaque(colorEnPeligro : Color) : void
+    + alError(mensaje : String) : void
+    + alFinDePartida(resultado : String) : void
+  }
+  class Partida <<game manager>> {
+    + {static} LIMITE_ESTANDAR_MEDIOS_MOVIMIENTOS : int = 100
+    - limiteMedioMovimientos : int
+    - historial : Deque<Registro>
+    - deshechas : Deque<Jugada>
+    - repeticiones : Map<String, Integer>
+    - turnoActual : Color
+    - medioMovimientosSinProgreso : int
+    + Partida(notificador : NotificadorUI, factory : TableroFactory)
+    + Partida(notificador, factory, validador : ValidadorDeJugadas, limiteMedioMovimientos : int)
+    + iniciar() : void
+    + intentarMovimiento(origen, destino, promocion : Promocion) : void
+    + deshacerJugada() : void
+    + rehacerJugada() : void
+    + motivoParaNoMoverDesde(origen : Posicion) : Optional<String>
+    + requierePromocion(origen : Posicion, destino : Posicion) : boolean
+    + tablero() : Tablero
+    + turnoActual() : Color
+    + estado() : EstadoPartida
+    ~ aplicarJugada(origen, destino, promocion : Promocion) : void
+    ~ cambiarEstado(nuevo : EstadoPartida) : void
+    ~ notificador() : NotificadorUI
+    ~ validador() : ValidadorDeJugadas
+    ~ limiteMedioMovimientos() : int
+    ~ medioMovimientosSinProgreso() : int
+    ~ repeticionesDePosicionActual() : int
+  }
+  class ValidadorDeJugadas {
+    + motivoDeIlegalidad(tablero, turno : Color, origen, destino) : Optional<String>
+    + motivoDeOrigenInvalido(tablero, turno : Color, origen) : Optional<String>
+    + esLegal(tablero, turno : Color, origen, destino) : boolean
+    + tieneMovimientoLegal(tablero, color : Color) : boolean
+  }
+  interface EstadoPartida <<State>> {
+    + intentarMovimiento(partida : Partida, origen, destino, promocion : Promocion) : void
+    + estaTerminada() : boolean
+    + descripcion() : String
+  }
+  class EnCurso
+  class JaqueMate {
+    - ganador : Color
+    + JaqueMate(ganador : Color)
+    + ganador() : Color
+  }
+  class Tablas {
+    + Tablas(motivo : MotivoTablas)
+    + motivo() : MotivoTablas
+  }
+  enum MotivoTablas {
+    AHOGADO
+    REPETICION
+    REGLA_DE_LOS_50_MOVIMIENTOS
+    + descripcion() : String
+  }
+}
+
+package "ajedrez.core.comando  (NÚCLEO)" #FFF8EC {
+  interface ComandoMovimiento <<Command>> {
+    + ejecutar() : void
+    + deshacer() : void
+  }
+  class ComandoMoverPieza {
+    - origen : Posicion
+    - destino : Posicion
+    - piezaMovida : Pieza
+    - piezaCapturada : Pieza
+    - piezaPromovida : Pieza
+    - torreOrigen : Posicion
+    - torreDestino : Posicion
+    - ejecutado : boolean
+    + ComandoMoverPieza(tablero : Tablero, origen, destino, promocion : Promocion)
+    + ejecutar() : void
+    + deshacer() : void
+    + piezaMovida() : Pieza
+    + piezaCapturada() : Pieza
+  }
+}
+
+package "ajedrez.core.fabrica  (NÚCLEO)" #FFF8EC {
+  interface TableroFactory <<Factory>> {
+    + crearTableroInicial() : Tablero
+  }
+  class TableroEstandarFactory {
+    + crearTableroInicial() : Tablero
+  }
+  class PiezaFactory <<utilidad>> {
+    + {static} peon(color : Color) : Pieza
+    + {static} torre(color : Color) : Pieza
+    + {static} caballo(color : Color) : Pieza
+    + {static} alfil(color : Color) : Pieza
+    + {static} reina(color : Color) : Pieza
+    + {static} rey(color : Color) : Pieza
+  }
+  enum Promocion {
+    DAMA
+    TORRE
+    ALFIL
+    CABALLO
+    + crear(color : Color) : Pieza
+  }
+}
+
+package "ajedrez.core.modelo  (detalle en la página 2)" #F5F5F5 {
+  class Tablero
+  class Pieza
+}
+
+' Consola -> núcleo
+Main ..> MenuConsola : crea
+Main ..> PartidaConsola : crea
+Main ..> ConsolaUI : crea
+Main ..> Partida : crea
+Main ..> TableroEstandarFactory : inyecta
+MenuConsola --> Tema
+ConsolaUI --> Tema
+PartidaConsola --> "1" Partida : partida
+PartidaConsola --> "1" ConsolaUI : ui
+ConsolaUI ..|> NotificadorUI
+
+' Partida
+Partida ..|> EntradaAjedrez
+Partida --> "1" NotificadorUI : notificador
+Partida --> "1" ValidadorDeJugadas : validador
+Partida --> "1" EstadoPartida : estado
+Partida o-- "*" ComandoMoverPieza : historial
+Partida *-- "1" Tablero : tablero
+Partida ..> TableroFactory : usa al crearse
+EnCurso ..|> EstadoPartida
+JaqueMate ..|> EstadoPartida
+Tablas ..|> EstadoPartida
+Tablas --> "1" MotivoTablas : motivo
+EnCurso ..> JaqueMate : crea
+EnCurso ..> Tablas : crea
+ValidadorDeJugadas ..> ComandoMoverPieza : simula jugadas
+
+' Comando
+ComandoMoverPieza ..|> ComandoMovimiento
+ComandoMoverPieza --> "1" Tablero : tablero
+ComandoMoverPieza --> "1" Promocion : promocion
+
+' Fábricas
+TableroEstandarFactory ..|> TableroFactory
+TableroEstandarFactory ..> PiezaFactory
+TableroEstandarFactory ..> Tablero : crea
+Promocion ..> PiezaFactory
+PiezaFactory ..> Pieza : crea
+
+legend bottom left
+  + público   - privado   ~ paquete. Se omiten los métodos privados auxiliares.
+  Una referencia a otra clase se dibuja como flecha en vez de atributo.
+  Punteada con triángulo = implementa. Rombo lleno = composición. Rombo vacío = agregación.
+  Punteada simple = usa / crea. Las dependencias van siempre de la consola hacia el núcleo.
+endlegend
+@enduml

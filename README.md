@@ -56,6 +56,13 @@ La dependencia va siempre de la consola hacia el núcleo, nunca al revés.
 | Puerto de entrada | `EntradaAjedrez` |
 | Factory + inyección de dependencias | `TableroFactory` se inyecta en `Partida` |
 
+## Diagrama de clases (UML)
+
+En [`uml/diagrama-de-clases.pdf`](uml/diagrama-de-clases.pdf), en dos páginas: la arquitectura
+(consola, partida, comandos y fábricas) y el modelo con las estrategias de movimiento.
+Se genera desde los archivos `.puml` de la misma carpeta con [PlantUML](https://plantuml.com);
+si cambia el código, se editan esos archivos en lugar de redibujar el diagrama.
+
 ## Alcance
 
 Obligatorio: tablero, 6 piezas, turnos, captura, movimientos inválidos, jaque.

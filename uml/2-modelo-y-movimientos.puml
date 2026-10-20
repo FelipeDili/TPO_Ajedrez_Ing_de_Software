@@ -1,0 +1,132 @@
+@startuml 2-modelo-y-movimientos
+!include estilo.iuml
+
+title 2. Modelo y estrategias de movimiento (Strategy + Composite)
+
+package "ajedrez.core.modelo  (NÚCLEO)" #FFF8EC {
+  class Tablero {
+    - casilleros : Pieza[][]
+    + Tablero(filas : int, columnas : int)
+    + filas() : int
+    + columnas() : int
+    + contiene(pos : Posicion) : boolean
+    + obtenerPieza(pos : Posicion) : Pieza
+    + estaVacia(pos : Posicion) : boolean
+    + colocar(pos : Posicion, pieza : Pieza) : void
+    + mover(origen : Posicion, destino : Posicion) : Pieza
+    + posicionesDe(color : Color) : List<Posicion>
+    + buscarRey(color : Color) : Optional<Posicion>
+    + evaluarJaque(color : Color) : boolean
+    + estaAtacada(casilla : Posicion, atacante : Color) : boolean
+    + clave() : String
+  }
+  class Pieza {
+    - simbolo : char
+    - esRey : boolean
+    - cantidadMovimientos : int
+    + Pieza(color : Color, simbolo : char, esRey : boolean, estrategia : MovimientoEstrategia)
+    + color() : Color
+    + esRey() : boolean
+    + representacion() : char
+    + movimientosPosibles(origen, tablero) : List<Posicion>
+    + casillasAtacadas(origen, tablero) : List<Posicion>
+    + esMovimientoValido(origen, destino, tablero) : boolean
+    + esMovimientoIrreversible() : boolean
+    + promocionaEn(destino : Posicion, tablero : Tablero) : boolean
+    + puedeEnrocar() : boolean
+    + seHaMovido() : boolean
+    + registrarMovimiento() : void
+    + revertirMovimiento() : void
+  }
+  class Posicion <<record>> {
+    + fila : int
+    + columna : int
+    + {static} de(notacion : String) : Posicion
+    + desplazar(deltaFila : int, deltaColumna : int) : Posicion
+  }
+  enum Color {
+    BLANCAS
+    NEGRAS
+    + opuesto() : Color
+  }
+  interface MovimientoEstrategia <<Strategy>> {
+    + movimientosPosibles(origen : Posicion, tablero : Tablero) : List<Posicion>
+    + casillasAtacadas(origen, tablero) : List<Posicion>  {default}
+    + esIrreversible() : boolean  {default false}
+    + promociona() : boolean  {default false}
+    + enroca() : boolean  {default false}
+  }
+}
+
+package "ajedrez.core.movimiento  (NÚCLEO)" #FFF8EC {
+  class MovimientoPeon {
+    + movimientosPosibles(origen, tablero) : List<Posicion>
+    + casillasAtacadas(origen, tablero) : List<Posicion>
+    + esIrreversible() : boolean
+    + promociona() : boolean
+  }
+  class MovimientoTorre {
+    + movimientosPosibles(origen, tablero) : List<Posicion>
+    + enroca() : boolean
+  }
+  class MovimientoAlfil {
+    + movimientosPosibles(origen, tablero) : List<Posicion>
+  }
+  class MovimientoCaballo {
+    + movimientosPosibles(origen, tablero) : List<Posicion>
+  }
+  class MovimientoReina {
+    + movimientosPosibles(origen, tablero) : List<Posicion>
+  }
+  class MovimientoRey {
+    + movimientosPosibles(origen, tablero) : List<Posicion>
+    + casillasAtacadas(origen, tablero) : List<Posicion>
+  }
+  class MovimientoDeslizante {
+    - direcciones : int[][]
+    + MovimientoDeslizante(direcciones : int[][])
+    + movimientosPosibles(origen, tablero) : List<Posicion>
+  }
+  class MovimientoSaltador {
+    - saltos : int[][]
+    + MovimientoSaltador(saltos : int[][])
+    + movimientosPosibles(origen, tablero) : List<Posicion>
+  }
+  class MovimientoCompuesto <<Composite>> {
+    + MovimientoCompuesto(partes : MovimientoEstrategia...)
+    + movimientosPosibles(origen, tablero) : List<Posicion>
+    + casillasAtacadas(origen, tablero) : List<Posicion>
+  }
+  class Direcciones <<utilidad del paquete>> {
+    ~ {static} ORTOGONALES : int[][]
+    ~ {static} DIAGONALES : int[][]
+    ~ {static} TODAS : int[][]
+    ~ {static} SALTOS_CABALLO : int[][]
+  }
+}
+
+Tablero o-- "*" Pieza : casilleros
+Tablero ..> Posicion
+Pieza --> "1" Color : color
+Pieza *-- "1" MovimientoEstrategia : estrategia
+
+MovimientoPeon ..|> MovimientoEstrategia
+MovimientoTorre ..|> MovimientoEstrategia
+MovimientoAlfil ..|> MovimientoEstrategia
+MovimientoCaballo ..|> MovimientoEstrategia
+MovimientoReina ..|> MovimientoEstrategia
+MovimientoRey ..|> MovimientoEstrategia
+MovimientoDeslizante ..|> MovimientoEstrategia
+MovimientoSaltador ..|> MovimientoEstrategia
+MovimientoCompuesto ..|> MovimientoEstrategia
+MovimientoCompuesto o-- "1..*" MovimientoEstrategia : partes
+
+MovimientoTorre *-- MovimientoDeslizante : base
+MovimientoAlfil *-- MovimientoDeslizante : base
+MovimientoCaballo *-- MovimientoSaltador : base
+MovimientoRey *-- MovimientoSaltador : base
+MovimientoReina *-- MovimientoCompuesto : base (torre + alfil)
+MovimientoDeslizante ..> Direcciones
+MovimientoSaltador ..> Direcciones
+
+@enduml

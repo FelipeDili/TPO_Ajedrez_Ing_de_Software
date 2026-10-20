@@ -1,0 +1,16 @@
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam classFontStyle bold
+skinparam packageFontSize 15
+skinparam titleFontSize 20
+skinparam ArrowColor #444444
+skinparam ClassBorderColor #444444
+skinparam ClassBackgroundColor #FFFFFF
+skinparam PackageBorderColor #888888
+skinparam nodesep 40
+skinparam ranksep 60
+hide empty members
