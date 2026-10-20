@@ -109,6 +109,18 @@ class PromocionTest {
     }
 
     @Test
+    void rehacerRespetaLaPiezaElegidaAlPromocionar() {
+        poner(tablero, "a7", PiezaFactory.peon(Color.BLANCAS));
+        Partida p = partida();
+        jugar(p, "a7", "a8", Promocion.CABALLO);
+        p.deshacerJugada();
+
+        p.rehacerJugada();
+
+        assertEquals('C', en("a8"));
+    }
+
+    @Test
     void unaPromocionPuedeDarJaqueMate() {
         tablero = vacio();
         poner(tablero, "e1", PiezaFactory.rey(Color.BLANCAS));

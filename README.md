@@ -13,8 +13,9 @@ java -cp target/classes ajedrez.consola.Main --ascii   # versión simple, sin co
 
 Al arrancar aparece un menú para empezar la partida o cambiar el tema (colores o ASCII).
 
-Jugadas: `mover` (pide origen y después destino) o `e2 e4` directo. Comandos: `deshacer`,
-`ayuda`, `salir` (vuelve al menú).
+Jugadas: `mover` (pide origen y después destino) o `e2 e4` directo. Para enrocar, mover el rey
+dos casillas hacia la torre (`e1 g1`). Comandos: `deshacer`, `rehacer`, `ayuda`, `salir`
+(vuelve al menú).
 
 Sin Maven: `bash correr-tests.sh` compila y corre los tests con el JUnit standalone de `lib/`
 (bajarlo de Maven Central: `junit-platform-console-standalone-1.10.2.jar`).
@@ -36,7 +37,7 @@ ajedrez.core            <- NÚCLEO: sin UI ni frameworks (solo java.*)
   modelo                Color, Posicion, Pieza, Tablero, MovimientoEstrategia
   movimiento            una estrategia por pieza + bloques reutilizables
   fabrica               PiezaFactory, TableroFactory, TableroEstandarFactory
-  comando               ComandoMovimiento, ComandoMoverPieza (deshacer)
+  comando               ComandoMovimiento, ComandoMoverPieza (deshacer, promoción y enroque)
   partida               Partida, EntradaAjedrez, NotificadorUI, fases (State), ValidadorDeJugadas
 ajedrez.consola         <- ADAPTADOR: ConsolaUI (salida, implementa NotificadorUI),
                         PartidaConsola (entrada: lee comandos y conversa con el jugador),
@@ -49,7 +50,7 @@ La dependencia va siempre de la consola hacia el núcleo, nunca al revés.
 |---|---|
 | Strategy + composición sobre herencia | `Pieza` recibe un `MovimientoEstrategia`; no hay una subclase por pieza |
 | Composite | `MovimientoCompuesto` (la reina es torre + alfil) |
-| Command | `ComandoMoverPieza`: deshacer y también simular jugadas para validar jaque |
+| Command | `ComandoMoverPieza`: deshacer/rehacer y también simular jugadas para validar jaque |
 | State | `EnCurso`, `JaqueMate`, `Tablas` (fases de la partida) |
 | Observer / puerto de salida | `NotificadorUI` |
 | Puerto de entrada | `EntradaAjedrez` |
@@ -58,9 +59,9 @@ La dependencia va siempre de la consola hacia el núcleo, nunca al revés.
 ## Alcance
 
 Obligatorio: tablero, 6 piezas, turnos, captura, movimientos inválidos, jaque.
-Opcional implementado: jaque mate, tablas (ahogado, triple repetición, 50 movimientos), deshacer,
-promoción de peón (el jugador elige dama, torre, alfil o caballo).
-No implementado: enroque, captura al paso, IA, interfaz gráfica.
+Opcional implementado: jaque mate, tablas (ahogado, triple repetición, 50 movimientos),
+deshacer y rehacer, enroque, promoción de peón (el jugador elige dama, torre, alfil o caballo).
+No implementado: captura al paso, IA, interfaz gráfica.
 
 ## Cómo agregar una pieza nueva (para la defensa)
 

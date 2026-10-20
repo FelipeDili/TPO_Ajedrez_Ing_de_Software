@@ -15,4 +15,6 @@ public interface EntradaAjedrez {
     }
 
     void deshacerJugada();
+
+    void rehacerJugada();
 }

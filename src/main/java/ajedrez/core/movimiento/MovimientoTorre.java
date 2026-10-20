@@ -15,4 +15,9 @@ public class MovimientoTorre implements MovimientoEstrategia {
     public List<Posicion> movimientosPosibles(Posicion origen, Tablero tablero) {
         return base.movimientosPosibles(origen, tablero);
     }
+
+    @Override
+    public boolean enroca() {
+        return true;
+    }
 }

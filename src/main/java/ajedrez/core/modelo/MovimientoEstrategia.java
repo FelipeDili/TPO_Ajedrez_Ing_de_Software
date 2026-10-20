@@ -35,4 +35,9 @@ public interface MovimientoEstrategia {
     default boolean promociona() {
         return false;
     }
+
+    /** Indica si la pieza puede ser la compañera del rey en un enroque (la torre). */
+    default boolean enroca() {
+        return false;
+    }
 }

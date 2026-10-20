@@ -133,6 +133,18 @@ class PartidaConsolaTest {
         assertTrue(salida().contains("¿En qué pieza lo convertís?"));
     }
 
+    // ---------- Deshacer y rehacer ----------
+
+    @Test
+    void losComandosDeshacerYRehacerLleganAlNucleo() throws IOException {
+        PartidaConsola consola = consola(new TableroEstandarFactory(), "e2 e4\ndeshacer\nrehacer\nsalir\n");
+
+        consola.jugar();
+
+        assertEquals(Color.NEGRAS, partida.turnoActual());
+        assertFalse(salida().contains("Error"));
+    }
+
     // ---------- Comando mover ----------
 
     @Test

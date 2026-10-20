@@ -84,11 +84,13 @@ public class Tablero {
     /** true si el rey de ese color está amenazado por alguna pieza rival. */
     public boolean evaluarJaque(Color color) {
         Optional<Posicion> rey = buscarRey(color);
-        if (rey.isEmpty()) {
-            return false;
-        }
-        for (Posicion pos : posicionesDe(color.opuesto())) {
-            if (obtenerPieza(pos).casillasAtacadas(pos, this).contains(rey.get())) {
+        return rey.isPresent() && estaAtacada(rey.get(), color.opuesto());
+    }
+
+    /** true si alguna pieza del color {@code atacante} amenaza la casilla. */
+    public boolean estaAtacada(Posicion casilla, Color atacante) {
+        for (Posicion pos : posicionesDe(atacante)) {
+            if (obtenerPieza(pos).casillasAtacadas(pos, this).contains(casilla)) {
                 return true;
             }
         }

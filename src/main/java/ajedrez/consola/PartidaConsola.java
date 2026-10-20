@@ -24,7 +24,9 @@ public class PartidaConsola {
             Comandos:
               mover     te pide la pieza a mover y después el destino
               e2 e4     forma corta: origen y destino en una línea (o e2e4)
+              e1 g1     enroque: mové el rey dos casillas hacia la torre
               deshacer  vuelve atrás la última jugada
+              rehacer   vuelve a jugar la última jugada deshecha
               salir     abandona la partida y vuelve al menú""";
 
     private final BufferedReader teclado;
@@ -41,7 +43,7 @@ public class PartidaConsola {
 
     /** Juega la partida; devuelve false si se cerró la entrada y hay que terminar el programa. */
     public boolean jugar() throws IOException {
-        salida.println("Comandos: mover, deshacer, ayuda, salir (o jugá directo 'e2 e4').");
+        salida.println("Comandos: mover, deshacer, rehacer, ayuda, salir (o jugá directo 'e2 e4').");
         partida.iniciar();
 
         while (true) {
@@ -59,6 +61,8 @@ public class PartidaConsola {
                 return true;
             } else if (linea.equals("deshacer")) {
                 partida.deshacerJugada();
+            } else if (linea.equals("rehacer")) {
+                partida.rehacerJugada();
             } else if (linea.equals("ayuda")) {
                 salida.println(AYUDA);
             } else if (linea.equals("mover")) {

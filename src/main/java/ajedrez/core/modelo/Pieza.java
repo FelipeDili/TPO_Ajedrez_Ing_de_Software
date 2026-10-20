@@ -64,6 +64,11 @@ public class Pieza {
         return estrategia.promociona() && destino.fila() == ultimaFila;
     }
 
+    /** true si todavía puede enrocar con el rey: es una torre que nunca se movió. */
+    public boolean puedeEnrocar() {
+        return estrategia.enroca() && !seHaMovido();
+    }
+
     public boolean seHaMovido() {
         return cantidadMovimientos > 0;
     }

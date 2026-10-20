@@ -244,6 +244,78 @@ class PartidaTest {
         assertEquals(List.of("No hay jugadas para deshacer"), espia.errores);
     }
 
+    // ---------- Rehacer ----------
+
+    @Test
+    void rehacerVuelveAAplicarLaJugadaDeshecha() {
+        jugar("e2", "e4");
+        partida.deshacerJugada();
+
+        partida.rehacerJugada();
+
+        assertEquals(Color.BLANCAS, en("e4").color());
+        assertNull(en("e2"));
+        assertEquals(Color.NEGRAS, partida.turnoActual());
+        assertTrue(espia.errores.isEmpty());
+    }
+
+    @Test
+    void sePuedenRehacerVariasJugadasEnOrden() {
+        jugar("e2", "e4");
+        jugar("e7", "e5");
+        jugar("g1", "f3");
+        String posicionFinal = partida.tablero().clave();
+        partida.deshacerJugada();
+        partida.deshacerJugada();
+        partida.deshacerJugada();
+
+        partida.rehacerJugada();
+        partida.rehacerJugada();
+        partida.rehacerJugada();
+
+        assertEquals(posicionFinal, partida.tablero().clave());
+        assertEquals(Color.NEGRAS, partida.turnoActual());
+    }
+
+    @Test
+    void rehacerSinJugadasDeshechasInforma() {
+        partida.rehacerJugada();
+
+        assertEquals(List.of("No hay jugadas para rehacer"), espia.errores);
+    }
+
+    @Test
+    void unaJugadaNuevaDescartaLasJugadasDeshechas() {
+        jugar("e2", "e4");
+        partida.deshacerJugada();
+        jugar("d2", "d4");
+
+        partida.rehacerJugada();
+
+        assertEquals(List.of("No hay jugadas para rehacer"), espia.errores);
+    }
+
+    @Test
+    void unaJugadaInvalidaNoDescartaLasJugadasDeshechas() {
+        jugar("e2", "e4");
+        partida.deshacerJugada();
+        jugar("e2", "e5"); // inválida: no cambia nada
+
+        partida.rehacerJugada();
+
+        assertEquals(Color.BLANCAS, en("e4").color());
+    }
+
+    @Test
+    void rehacerElMateVuelveATerminarLaPartida() {
+        mateDelLoco();
+        partida.deshacerJugada();
+
+        partida.rehacerJugada();
+
+        assertInstanceOf(JaqueMate.class, partida.estado());
+    }
+
     // ---------- Jaque ----------
 
     @Test
