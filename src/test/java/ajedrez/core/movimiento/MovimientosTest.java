@@ -121,19 +121,13 @@ class MovimientosTest {
     // ---------- Caballo ----------
 
     @Test
-    void caballoCentralTiene8Movimientos() {
-        Tablero t = vacio();
-        poner(t, "d4", PiezaFactory.caballo(Color.BLANCAS));
-        assertEquals(8, movimientos(t, "d4").size());
-    }
-
-    @Test
     void caballoEnLaEsquinaTiene2Movimientos() {
         Tablero t = vacio();
         poner(t, "a1", PiezaFactory.caballo(Color.BLANCAS));
         assertEquals(conjunto("b3", "c2"), movimientos(t, "a1"));
     }
 
+    /** Rodeado de piezas en d4 conserva los mismos 8 saltos que con el tablero vacío. */
     @Test
     void caballoSaltaPorEncimaDeOtrasPiezas() {
         Tablero t = vacio();

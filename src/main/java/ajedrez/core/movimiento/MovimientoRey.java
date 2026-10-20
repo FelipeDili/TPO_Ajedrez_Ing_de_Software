@@ -21,8 +21,12 @@ public class MovimientoRey implements MovimientoEstrategia {
     @Override
     public List<Posicion> movimientosPosibles(Posicion origen, Tablero tablero) {
         List<Posicion> resultado = new ArrayList<>(base.movimientosPosibles(origen, tablero));
+        Pieza rey = tablero.obtenerPieza(origen);
+        if (rey.seHaMovido() || tablero.evaluarJaque(rey.color())) {
+            return resultado;
+        }
         for (int direccion : new int[]{-1, 1}) {
-            if (puedeEnrocarHacia(origen, direccion, tablero)) {
+            if (puedeEnrocarHacia(origen, direccion, rey, tablero)) {
                 resultado.add(origen.desplazar(0, 2 * direccion));
             }
         }
@@ -35,11 +39,8 @@ public class MovimientoRey implements MovimientoEstrategia {
         return base.movimientosPosibles(origen, tablero);
     }
 
-    private boolean puedeEnrocarHacia(Posicion origen, int direccion, Tablero tablero) {
-        Pieza rey = tablero.obtenerPieza(origen);
-        if (rey.seHaMovido()) {
-            return false;
-        }
+    /** Con el rey sin mover y fuera de jaque: ¿hay una torre lista de ese lado y el paso es seguro? */
+    private boolean puedeEnrocarHacia(Posicion origen, int direccion, Pieza rey, Tablero tablero) {
         Posicion torre = primeraPiezaHacia(origen, direccion, tablero);
         if (torre == null || Math.abs(torre.columna() - origen.columna()) < 3) {
             return false; // sin espacio para que el rey avance dos y la torre lo salte
@@ -48,7 +49,6 @@ public class MovimientoRey implements MovimientoEstrategia {
         Posicion casillaDePaso = origen.desplazar(0, direccion);
         return companera.color() == rey.color()
                 && companera.puedeEnrocar()
-                && !tablero.evaluarJaque(rey.color())
                 && !tablero.estaAtacada(casillaDePaso, rey.color().opuesto());
     }
 
