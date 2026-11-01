@@ -18,7 +18,7 @@ package "ajedrez.consola  (ADAPTADOR)" #EEF3FA {
   class PartidaConsola {
     - teclado : BufferedReader
     - salida : PrintStream
-    + PartidaConsola(teclado, salida, partida : Partida, ui : ConsolaUI)
+    + PartidaConsola(teclado, salida, partida : EntradaAjedrez, ui : ConsolaUI)
     + jugar() : boolean
     ~ prompt() : String
     ~ {static} promocionDeLetra(respuesta : String) : Promocion
@@ -40,10 +40,15 @@ package "ajedrez.consola  (ADAPTADOR)" #EEF3FA {
 
 package "ajedrez.core.partida  (NÚCLEO)" #FFF8EC {
   interface EntradaAjedrez <<puerto de entrada>> {
+    + iniciar() : void
     + intentarMovimiento(origen : Posicion, destino : Posicion, promocion : Promocion) : void
     + intentarMovimiento(origen : Posicion, destino : Posicion) : void  {default}
     + deshacerJugada() : void
     + rehacerJugada() : void
+    + turnoActual() : Color
+    + estaTerminada() : boolean
+    + motivoParaNoMoverDesde(origen : Posicion) : Optional<String>
+    + requierePromocion(origen : Posicion, destino : Posicion) : boolean
   }
   interface NotificadorUI <<puerto de salida>> {
     + alTableroActualizado(tablero : Tablero) : void
@@ -69,6 +74,7 @@ package "ajedrez.core.partida  (NÚCLEO)" #FFF8EC {
     + requierePromocion(origen : Posicion, destino : Posicion) : boolean
     + tablero() : Tablero
     + turnoActual() : Color
+    + estaTerminada() : boolean
     + estado() : EstadoPartida
     ~ aplicarJugada(origen, destino, promocion : Promocion) : void
     ~ cambiarEstado(nuevo : EstadoPartida) : void
@@ -108,11 +114,7 @@ package "ajedrez.core.partida  (NÚCLEO)" #FFF8EC {
 }
 
 package "ajedrez.core.comando  (NÚCLEO)" #FFF8EC {
-  interface ComandoMovimiento <<Command>> {
-    + ejecutar() : void
-    + deshacer() : void
-  }
-  class ComandoMoverPieza {
+  class ComandoMoverPieza <<Command>> {
     - origen : Posicion
     - destino : Posicion
     - piezaMovida : Pieza
@@ -166,7 +168,7 @@ Main ..> Partida : crea
 Main ..> TableroEstandarFactory : inyecta
 MenuConsola --> Tema
 ConsolaUI --> Tema
-PartidaConsola --> "1" Partida : partida
+PartidaConsola --> "1" EntradaAjedrez : partida
 PartidaConsola --> "1" ConsolaUI : ui
 ConsolaUI ..|> NotificadorUI
 
@@ -187,7 +189,6 @@ EnCurso ..> Tablas : crea
 ValidadorDeJugadas ..> ComandoMoverPieza : simula jugadas
 
 ' Comando
-ComandoMoverPieza ..|> ComandoMovimiento
 ComandoMoverPieza --> "1" Tablero : tablero
 ComandoMoverPieza --> "1" Promocion : promocion
 

@@ -4,6 +4,7 @@ import ajedrez.core.comando.ComandoMoverPieza;
 import ajedrez.core.fabrica.Promocion;
 import ajedrez.core.fabrica.TableroFactory;
 import ajedrez.core.modelo.Color;
+import ajedrez.core.modelo.Pieza;
 import ajedrez.core.modelo.Posicion;
 import ajedrez.core.modelo.Tablero;
 
@@ -58,7 +59,7 @@ public class Partida implements EntradaAjedrez {
         repeticiones.put(clavePosicionActual(), 1);
     }
 
-    /** Muestra el estado inicial a quien esté escuchando. */
+    @Override
     public void iniciar() {
         notificador.alTableroActualizado(tablero);
     }
@@ -72,10 +73,7 @@ public class Partida implements EntradaAjedrez {
         }
     }
 
-    /**
-     * Devuelve por qué no se puede mover desde {@code origen}, o vacío si ahí hay una pieza
-     * del jugador de turno. Permite que una interfaz avise antes de pedir el destino.
-     */
+    @Override
     public Optional<String> motivoParaNoMoverDesde(Posicion origen) {
         if (estado.estaTerminada()) {
             return Optional.of("La partida terminó: " + estado.descripcion());
@@ -83,10 +81,7 @@ public class Partida implements EntradaAjedrez {
         return validador.motivoDeOrigenInvalido(tablero, turnoActual, origen);
     }
 
-    /**
-     * true si la jugada es legal y lleva un peón a la última fila. La interfaz lo consulta
-     * antes de jugar para preguntarle al jugador en qué pieza convertirlo.
-     */
+    @Override
     public boolean requierePromocion(Posicion origen, Posicion destino) {
         return !estado.estaTerminada()
                 && validador.esLegal(tablero, turnoActual, origen, destino)
@@ -128,8 +123,14 @@ public class Partida implements EntradaAjedrez {
         return tablero;
     }
 
+    @Override
     public Color turnoActual() {
         return turnoActual;
+    }
+
+    @Override
+    public boolean estaTerminada() {
+        return estado.estaTerminada();
     }
 
     public EstadoPartida estado() {
@@ -178,7 +179,20 @@ public class Partida implements EntradaAjedrez {
         historial.push(new Registro(new Jugada(origen, destino, promocion), comando, relojPrevio, clave));
     }
 
+    /**
+     * Dos posiciones solo cuentan como repetidas si además tienen los mismos derechos de enroque
+     * (reglamento FIDE): por eso la clave suma dónde quedan reyes y torres que nunca se movieron.
+     */
     private String clavePosicionActual() {
-        return turnoActual + "|" + tablero.clave();
+        StringBuilder clave = new StringBuilder(turnoActual + "|" + tablero.clave() + "|");
+        for (Color color : Color.values()) {
+            for (Posicion pos : tablero.posicionesDe(color)) {
+                Pieza pieza = tablero.obtenerPieza(pos);
+                if ((pieza.esRey() && !pieza.seHaMovido()) || pieza.puedeEnrocar()) {
+                    clave.append(pos);
+                }
+            }
+        }
+        return clave.toString();
     }
 }

@@ -2,7 +2,7 @@ package ajedrez.consola;
 
 import ajedrez.core.fabrica.Promocion;
 import ajedrez.core.modelo.Posicion;
-import ajedrez.core.partida.Partida;
+import ajedrez.core.partida.EntradaAjedrez;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,10 +31,10 @@ public class PartidaConsola {
 
     private final BufferedReader teclado;
     private final PrintStream salida;
-    private final Partida partida;
+    private final EntradaAjedrez partida;
     private final ConsolaUI ui;
 
-    public PartidaConsola(BufferedReader teclado, PrintStream salida, Partida partida, ConsolaUI ui) {
+    public PartidaConsola(BufferedReader teclado, PrintStream salida, EntradaAjedrez partida, ConsolaUI ui) {
         this.teclado = teclado;
         this.salida = salida;
         this.partida = partida;
@@ -78,7 +78,7 @@ public class PartidaConsola {
      * se puede deshacer o salir.
      */
     String prompt() {
-        if (partida.estado().estaTerminada()) {
+        if (partida.estaTerminada()) {
             return "[terminada: deshacer o salir] > ";
         }
         return "[" + partida.turnoActual().name().toLowerCase() + "] > ";
@@ -89,7 +89,7 @@ public class PartidaConsola {
      * origen hay una pieza del jugador de turno, para no hacer escribir de más.
      */
     private void procesarMover() throws IOException {
-        if (partida.estado().estaTerminada()) {
+        if (partida.estaTerminada()) {
             ui.alError("La partida terminó: solo se puede deshacer o salir.");
             return;
         }

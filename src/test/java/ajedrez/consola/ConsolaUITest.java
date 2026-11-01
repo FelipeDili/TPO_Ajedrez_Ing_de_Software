@@ -81,12 +81,12 @@ class ConsolaUITest {
         consola(Tema.UNICODE_COLOR).alTableroActualizado(inicial());
 
         String texto = salida();
-        assertTrue(texto.contains("♜")); // torre
-        assertTrue(texto.contains("♞")); // caballo
-        assertTrue(texto.contains("♝")); // alfil
-        assertTrue(texto.contains("♛")); // dama
-        assertTrue(texto.contains("♚")); // rey
-        assertTrue(texto.contains("♙")); // peón
+        for (String simbolo : List.of("♖", "♘", "♗", "♕", "♔", "♙")) { // blancas: huecos
+            assertTrue(texto.contains(simbolo), simbolo);
+        }
+        for (String simbolo : List.of("♜", "♞", "♝", "♛", "♚", "♟")) { // negras: rellenos
+            assertTrue(texto.contains(simbolo), simbolo);
+        }
         assertFalse(texto.contains("T C A D"));
     }
 
@@ -95,8 +95,10 @@ class ConsolaUITest {
         consola(Tema.UNICODE_COLOR).alTableroActualizado(inicial());
 
         String texto = sinColores(salida());
-        assertEquals(" 1  ♜  ♞  ♝  ♛  ♚  ♝  ♞  ♜ ",
+        assertEquals(" 1  ♖  ♘  ♗  ♕  ♔  ♗  ♘  ♖ ",
                 lineaQueEmpiezaCon(texto, " 1 "));
+        assertEquals(" 8  ♜  ♞  ♝  ♛  ♚  ♝  ♞  ♜ ",
+                lineaQueEmpiezaCon(texto, " 8 "));
         assertEquals(" 4 " + " ".repeat(8 * 3), lineaQueEmpiezaCon(texto, " 4 ")); // fila vacía
         assertTrue(texto.contains("    a  b  c  d  e  f  g  h "));
     }

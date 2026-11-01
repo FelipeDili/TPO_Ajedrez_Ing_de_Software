@@ -22,11 +22,15 @@ Sin Maven: `bash correr-tests.sh` compila y corre los tests con el JUnit standal
 
 ### Windows (Windows Terminal, PowerShell, cmd)
 
-- Antes de ejecutar, poné la consola en UTF-8 para que se vean las piezas: `chcp 65001`.
+- El programa pone la consola en UTF-8 al arrancar (equivale a `chcp 65001`), así que no hace falta
+  hacerlo a mano.
 - Los colores funcionan en Windows Terminal y en PowerShell de Windows 10/11. Si aparecen
   caracteres raros como `←[48;5;137m`, tu consola no interpreta colores ANSI: usá `--ascii`.
 - Si las piezas se ven como cuadrados, la fuente de la terminal no tiene los símbolos de ajedrez
   (probá "Consolas" o "Segoe UI Symbol") o usá `--ascii`.
+- Con colores, las piezas blancas se dibujan huecas (♔) y las negras rellenas (♚). En la terminal de
+  VS Code, si las piezas cambian de color según la casilla, poné
+  `"terminal.integrated.minimumContrastRatio": 1` en la configuración.
 - En el modo `--ascii`: mayúsculas = blancas, minúsculas = negras. P peón, T torre, C caballo,
   A alfil, D dama, R rey.
 
@@ -37,7 +41,7 @@ ajedrez.core            <- NÚCLEO: sin UI ni frameworks (solo java.*)
   modelo                Color, Posicion, Pieza, Tablero, MovimientoEstrategia
   movimiento            una estrategia por pieza + bloques reutilizables
   fabrica               PiezaFactory, TableroFactory, TableroEstandarFactory
-  comando               ComandoMovimiento, ComandoMoverPieza (deshacer, promoción y enroque)
+  comando               ComandoMoverPieza (deshacer, promoción y enroque)
   partida               Partida, EntradaAjedrez, NotificadorUI, fases (State), ValidadorDeJugadas
 ajedrez.consola         <- ADAPTADOR: ConsolaUI (salida, implementa NotificadorUI),
                         PartidaConsola (entrada: lee comandos y conversa con el jugador),
@@ -53,7 +57,7 @@ La dependencia va siempre de la consola hacia el núcleo, nunca al revés.
 | Command | `ComandoMoverPieza`: deshacer/rehacer y también simular jugadas para validar jaque |
 | State | `EnCurso`, `JaqueMate`, `Tablas` (fases de la partida) |
 | Observer / puerto de salida | `NotificadorUI` |
-| Puerto de entrada | `EntradaAjedrez` |
+| Puerto de entrada | `EntradaAjedrez`: acciones y consultas; la consola depende solo de este puerto |
 | Factory + inyección de dependencias | `TableroFactory` se inyecta en `Partida` |
 
 ## Diagrama de clases (UML)
