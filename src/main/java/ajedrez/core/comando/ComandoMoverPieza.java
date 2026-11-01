@@ -12,8 +12,12 @@ import java.util.Objects;
  * de movimientos de la pieza (para que el peón recupere su doble paso al deshacer), si hubo
  * promoción el peón original que la pieza nueva reemplazó, y si fue un enroque de dónde
  * salió la torre.
+ *
+ * Command: la jugada es un objeto con ejecutar() y deshacer(). Es una clase concreta y no una
+ * interfaz porque hay un solo tipo de comando; si apareciera otro (por ejemplo la captura al
+ * paso como comando propio), ahí se extrae la interfaz común.
  */
-public class ComandoMoverPieza implements ComandoMovimiento {
+public class ComandoMoverPieza {
 
     private final Tablero tablero;
     private final Posicion origen;
@@ -33,7 +37,6 @@ public class ComandoMoverPieza implements ComandoMovimiento {
         this.promocion = Objects.requireNonNull(promocion);
     }
 
-    @Override
     public void ejecutar() {
         if (ejecutado) {
             throw new IllegalStateException("El comando ya fue ejecutado");
@@ -69,7 +72,6 @@ public class ComandoMoverPieza implements ComandoMovimiento {
         tablero.obtenerPieza(torreDestino).registrarMovimiento();
     }
 
-    @Override
     public void deshacer() {
         if (!ejecutado) {
             throw new IllegalStateException("El comando todavía no fue ejecutado");

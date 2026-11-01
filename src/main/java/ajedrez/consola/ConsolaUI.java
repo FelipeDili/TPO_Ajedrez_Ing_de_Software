@@ -25,10 +25,18 @@ public class ConsolaUI implements NotificadorUI {
     private static final int PIEZA_BLANCA = 231;
     private static final int PIEZA_NEGRA = 16;
 
-    // Se usan los símbolos "rellenos" para los dos bandos y se distinguen por color.
-    // Excepto el peón: Windows dibuja "♟" como emoji e ignora el color, así que va el hueco.
-    private static final Map<Character, String> SIMBOLOS = Map.of(
+    // Huecos para blancas y rellenos para negras, además del color. Así los bandos se distinguen
+    // aunque la terminal no respete el color: Windows dibuja algunos símbolos como emoji, y la
+    // terminal de VS Code ajusta el color del texto según el fondo de cada casilla.
+    private static final Map<Character, String> SIMBOLOS_BLANCAS = Map.of(
             'P', "♙",
+            'T', "♖",
+            'C', "♘",
+            'A', "♗",
+            'D', "♕",
+            'R', "♔");
+    private static final Map<Character, String> SIMBOLOS_NEGRAS = Map.of(
+            'P', "♟",
             'T', "♜",
             'C', "♞",
             'A', "♝",
@@ -111,7 +119,8 @@ public class ConsolaUI implements NotificadorUI {
             return fondo + "   " + RESET;
         }
         char letra = Character.toUpperCase(pieza.representacion());
-        String simbolo = SIMBOLOS.getOrDefault(letra, String.valueOf(letra)); // pieza nueva: su letra
+        Map<Character, String> simbolos = pieza.color() == Color.BLANCAS ? SIMBOLOS_BLANCAS : SIMBOLOS_NEGRAS;
+        String simbolo = simbolos.getOrDefault(letra, String.valueOf(letra)); // pieza nueva: su letra
         String frente = pieza.color() == Color.BLANCAS
                 ? CSI + "1;38;5;" + PIEZA_BLANCA + "m"
                 : CSI + "38;5;" + PIEZA_NEGRA + "m";

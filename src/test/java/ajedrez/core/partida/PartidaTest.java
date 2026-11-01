@@ -471,6 +471,28 @@ class PartidaTest {
         assertFalse(partida.estado().estaTerminada());
     }
 
+    private void idaYVueltaDeReyes() {
+        jugar("e1", "e2");
+        jugar("e8", "e7");
+        jugar("e2", "e1");
+        jugar("e7", "e8");
+    }
+
+    @Test
+    void unaPosicionSinDerechoAEnrocarNoRepiteLaQueLoTenia() {
+        jugar("e2", "e4");
+        jugar("e7", "e5"); // 1.ª vez, los reyes todavía pueden enrocar
+        idaYVueltaDeReyes(); // mismas piezas en las mismas casillas, pero ya sin enroque
+        idaYVueltaDeReyes();
+
+        assertFalse(partida.estado().estaTerminada()); // la posición sin enroque apareció solo 2 veces
+
+        idaYVueltaDeReyes();
+
+        Tablas tablas = assertInstanceOf(Tablas.class, partida.estado());
+        assertEquals(MotivoTablas.REPETICION, tablas.motivo());
+    }
+
     @Test
     void alLlegarAlLimiteDeMovimientosSinProgresoHayTablas() {
         Partida p = partidaConReyesYLimite(4);
