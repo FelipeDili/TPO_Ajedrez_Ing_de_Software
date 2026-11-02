@@ -9,10 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Rey: una casilla en cualquier dirección, o el enroque: dos casillas hacia una torre propia
- * cuando ninguno de los dos se movió, no hay piezas entre ellos, el rey no está en jaque y
- * no pasa por una casilla atacada. Que no termine en jaque lo revisa el ValidadorDeJugadas,
- * como en cualquier jugada. El salto de la torre lo hace el ComandoMoverPieza.
+ * Una casilla en cualquier dirección, o el enroque si el rey y la torre no se movieron, no hay
+ * piezas en el medio, el rey no está en jaque y no pasa por una casilla atacada. Que no termine en
+ * jaque lo revisa el ValidadorDeJugadas; el salto de la torre lo hace el ComandoMoverPieza.
  */
 public class MovimientoRey implements MovimientoEstrategia {
 
@@ -39,7 +38,6 @@ public class MovimientoRey implements MovimientoEstrategia {
         return base.movimientosPosibles(origen, tablero);
     }
 
-    /** Con el rey sin mover y fuera de jaque: ¿hay una torre lista de ese lado y el paso es seguro? */
     private boolean puedeEnrocarHacia(Posicion origen, int direccion, Pieza rey, Tablero tablero) {
         Posicion torre = primeraPiezaHacia(origen, direccion, tablero);
         if (torre == null || Math.abs(torre.columna() - origen.columna()) < 3) {
@@ -52,7 +50,6 @@ public class MovimientoRey implements MovimientoEstrategia {
                 && !tablero.estaAtacada(casillaDePaso, rey.color().opuesto());
     }
 
-    /** Recorre la fila desde el rey hacia un lado y devuelve la primera casilla ocupada. */
     private Posicion primeraPiezaHacia(Posicion origen, int direccion, Tablero tablero) {
         Posicion actual = origen.desplazar(0, direccion);
         while (tablero.contiene(actual)) {

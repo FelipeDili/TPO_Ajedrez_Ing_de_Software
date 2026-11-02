@@ -10,9 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Peón: avanza una casilla (dos si todavía no se movió) sin capturar, y captura en
- * diagonal hacia adelante. La dirección depende del color. Al llegar a la última fila
- * promociona (ver {@link #promociona()}). La captura al paso no está implementada (es opcional).
+ * Avanza una casilla (dos si no se movió) sin capturar y captura en diagonal. La captura al paso no
+ * está implementada.
  */
 public class MovimientoPeon implements MovimientoEstrategia {
 

@@ -8,10 +8,7 @@ import ajedrez.core.modelo.Tablero;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Bloque reutilizable: un único salto por cada desplazamiento, sin importar lo que haya
- * en el medio. Sirve para el caballo y para el rey.
- */
+/** Un salto por desplazamiento, sin importar lo que haya en el medio (caballo y rey). */
 public class MovimientoSaltador implements MovimientoEstrategia {
 
     private final int[][] saltos;

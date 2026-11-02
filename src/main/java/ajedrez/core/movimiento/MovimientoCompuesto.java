@@ -9,10 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Combina varias estrategias en una (unión de sus movimientos). La reina es torre + alfil,
- * y se pueden inventar piezas nuevas (por ejemplo torre + caballo) sin escribir lógica nueva.
- */
+/** Composite: une los movimientos de varias estrategias (la reina es torre + alfil). */
 public class MovimientoCompuesto implements MovimientoEstrategia {
 
     private final List<MovimientoEstrategia> partes;

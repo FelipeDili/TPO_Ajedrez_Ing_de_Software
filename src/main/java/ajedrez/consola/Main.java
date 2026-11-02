@@ -10,10 +10,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-/**
- * Punto de entrada y "composition root": acá se eligen las implementaciones concretas
- * (consola, tablero estándar) y se inyectan en el núcleo. Además de eso solo prepara la consola.
- */
+/** Composition root: elige las implementaciones concretas y las inyecta en el núcleo. */
 public final class Main {
 
     private Main() {
@@ -37,11 +34,7 @@ public final class Main {
         salida.println("Hasta la próxima.");
     }
 
-    /**
-     * La consola de Windows arranca en una página de códigos vieja (850/437) y muestra los
-     * símbolos de las piezas como "ÔÖ£". Equivale a correr "chcp 65001" antes de jugar.
-     * Si falla, se sigue igual: queda el tema ASCII como alternativa.
-     */
+    /** Equivale a "chcp 65001": sin esto, Windows muestra los símbolos de las piezas como "ÔÖ£". */
     private static void ponerConsolaWindowsEnUtf8() {
         if (!System.getProperty("os.name", "").toLowerCase().startsWith("windows")) {
             return;

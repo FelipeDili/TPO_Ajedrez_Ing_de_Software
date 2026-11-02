@@ -6,7 +6,6 @@ import ajedrez.core.modelo.Tablero;
 
 import java.util.List;
 
-/** Caballo: salta en "L" y puede pasar por encima de otras piezas. */
 public class MovimientoCaballo implements MovimientoEstrategia {
 
     private final MovimientoEstrategia base = new MovimientoSaltador(Direcciones.SALTOS_CABALLO);

@@ -1,6 +1,5 @@
 package ajedrez.core.partida;
 
-/** Razones por las que una partida termina empatada. */
 public enum MotivoTablas {
     AHOGADO("rey ahogado"),
     REPETICION("triple repetición de la posición"),

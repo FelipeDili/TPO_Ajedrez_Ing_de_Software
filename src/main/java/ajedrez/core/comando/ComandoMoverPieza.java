@@ -8,14 +8,9 @@ import ajedrez.core.modelo.Tablero;
 import java.util.Objects;
 
 /**
- * Mueve una pieza recordando lo necesario para revertirlo: la pieza capturada, el contador
- * de movimientos de la pieza (para que el peón recupere su doble paso al deshacer), si hubo
- * promoción el peón original que la pieza nueva reemplazó, y si fue un enroque de dónde
- * salió la torre.
- *
- * Command: la jugada es un objeto con ejecutar() y deshacer(). Es una clase concreta y no una
- * interfaz porque hay un solo tipo de comando; si apareciera otro (por ejemplo la captura al
- * paso como comando propio), ahí se extrae la interfaz común.
+ * Command: una jugada que se puede ejecutar y deshacer. Guarda lo necesario para revertirla: la
+ * pieza capturada, el contador de movimientos, el peón que reemplazó una promoción y de dónde salió
+ * la torre en un enroque. No tiene interfaz porque hay un solo tipo de comando.
  */
 public class ComandoMoverPieza {
 

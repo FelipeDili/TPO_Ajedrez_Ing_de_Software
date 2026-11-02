@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
 
-/**
- * Menú inicial: deja elegir el tema de la consola antes de empezar. Es parte del adaptador;
- * el núcleo no sabe que existe.
- */
+/** Menú inicial: empezar la partida o cambiar el tema. */
 public class MenuConsola {
 
     private final BufferedReader teclado;
@@ -24,7 +21,7 @@ public class MenuConsola {
         return tema;
     }
 
-    /** Muestra el menú hasta que el usuario empieza una partida (true) o sale (false). */
+    /** Devuelve true si el usuario empieza una partida y false si sale. */
     public boolean elegir() throws IOException {
         while (true) {
             salida.println();

@@ -6,7 +6,6 @@ import ajedrez.core.modelo.Tablero;
 
 import java.util.List;
 
-/** Reina: se mueve como una torre y como un alfil (composición de ambas estrategias). */
 public class MovimientoReina implements MovimientoEstrategia {
 
     private final MovimientoEstrategia base =
