@@ -16,15 +16,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Orquestador del juego (el "game manager"). Mantiene el tablero, de quién es el turno, el
- * historial de jugadas para deshacer y rehacer, y la fase actual (State). No conoce ninguna interfaz
- * concreta: habla con el mundo exterior solo a través de {@link EntradaAjedrez} y
- * {@link NotificadorUI}.
+ * Orquesta la partida: tablero, turno, historial para deshacer y rehacer, y la fase actual (State).
  */
 public class Partida implements EntradaAjedrez {
 
     /** 100 medios movimientos = 50 movimientos de cada bando. */
-    public static final int LIMITE_ESTANDAR_MEDIOS_MOVIMIENTOS = 100;
+    private static final int LIMITE_ESTANDAR_MEDIOS_MOVIMIENTOS = 100;
 
     /** Lo que pidió el jugador: alcanza para volver a jugarla al rehacer. */
     private record Jugada(Posicion origen, Posicion destino, Promocion promocion) {
@@ -106,8 +103,8 @@ public class Partida implements EntradaAjedrez {
     }
 
     /**
-     * Vuelve a jugar la última jugada deshecha. Pasa por la fase actual como cualquier
-     * jugada, así se vuelven a evaluar el jaque, el mate y las tablas.
+     * Vuelve a jugar la última jugada deshecha. Pasa por la fase actual como cualquier jugada, así
+     * se vuelven a evaluar el jaque, el mate y las tablas.
      */
     @Override
     public void rehacerJugada() {

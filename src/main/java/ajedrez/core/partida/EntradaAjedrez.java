@@ -7,13 +7,11 @@ import ajedrez.core.modelo.Posicion;
 import java.util.Optional;
 
 /**
- * Puerto de entrada: lo que cualquier interfaz (consola, gráfica, web) puede pedirle al núcleo.
- * Incluye las acciones del jugador y las consultas que una interfaz necesita para guiarlo, así
- * ningún adaptador depende de la clase concreta {@link Partida}.
+ * Puerto de entrada: acciones y consultas que cualquier interfaz (consola, gráfica, web) le pide al
+ * núcleo.
  */
 public interface EntradaAjedrez {
 
-    /** Muestra el estado inicial a quien esté escuchando. */
     void iniciar();
 
     /** Si la jugada lleva un peón a la última fila, se convierte en la pieza indicada. */
@@ -33,14 +31,14 @@ public interface EntradaAjedrez {
     boolean estaTerminada();
 
     /**
-     * Devuelve por qué no se puede mover desde {@code origen}, o vacío si ahí hay una pieza
-     * del jugador de turno. Permite que una interfaz avise antes de pedir el destino.
+     * Vacío si en el origen hay una pieza del jugador de turno. Permite avisar antes de pedir el
+     * destino.
      */
     Optional<String> motivoParaNoMoverDesde(Posicion origen);
 
     /**
-     * true si la jugada es legal y lleva un peón a la última fila. La interfaz lo consulta
-     * antes de jugar para preguntarle al jugador en qué pieza convertirlo.
+     * true si la jugada es legal y lleva un peón a la última fila: la interfaz pregunta entonces la
+     * pieza.
      */
     boolean requierePromocion(Posicion origen, Posicion destino);
 }

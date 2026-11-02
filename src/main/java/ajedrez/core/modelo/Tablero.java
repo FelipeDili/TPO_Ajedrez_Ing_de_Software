@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Grilla de casilleros. El tamaño es un parámetro (no está fijo en 8x8), así que cambiar
- * las dimensiones no obliga a tocar esta clase.
- */
+/** Grilla de casilleros de tamaño variable: ninguna regla depende de que sea 8x8. */
 public class Tablero {
 
     private final Pieza[][] casilleros;
@@ -32,7 +29,7 @@ public class Tablero {
                 && pos.columna() >= 0 && pos.columna() < columnas();
     }
 
-    /** Devuelve la pieza en la posición, o null si está vacía o fuera del tablero. */
+    /** null si está vacía o fuera del tablero. */
     public Pieza obtenerPieza(Posicion pos) {
         return contiene(pos) ? casilleros[pos.fila()][pos.columna()] : null;
     }
@@ -46,7 +43,7 @@ public class Tablero {
         casilleros[pos.fila()][pos.columna()] = pieza;
     }
 
-    /** Mueve la pieza de origen a destino y devuelve la pieza capturada (o null). */
+    /** Devuelve la pieza capturada, o null. */
     public Pieza mover(Posicion origen, Posicion destino) {
         Pieza movida = obtenerPieza(origen);
         if (movida == null) {
@@ -81,7 +78,6 @@ public class Tablero {
         return Optional.empty();
     }
 
-    /** true si el rey de ese color está amenazado por alguna pieza rival. */
     public boolean evaluarJaque(Color color) {
         Optional<Posicion> rey = buscarRey(color);
         return rey.isPresent() && estaAtacada(rey.get(), color.opuesto());
@@ -97,7 +93,7 @@ public class Tablero {
         return false;
     }
 
-    /** Foto textual de la posición, útil para detectar repeticiones. */
+    /** Foto textual de la posición, para detectar repeticiones. */
     public String clave() {
         StringBuilder sb = new StringBuilder();
         for (int f = 0; f < filas(); f++) {

@@ -10,13 +10,12 @@ import ajedrez.core.modelo.Tablero;
 import java.util.Optional;
 
 /**
- * Decide si una jugada es LEGAL: además de respetar el movimiento de la pieza, no puede
- * dejar al propio rey en jaque. Para comprobarlo prueba la jugada de verdad con un comando
- * y la deshace (por eso el Command sirve también para simular).
+ * Una jugada es legal si respeta el movimiento de la pieza y no deja al propio rey en jaque. Para
+ * comprobarlo la ejecuta con un ComandoMoverPieza y la deshace.
  */
 public class ValidadorDeJugadas {
 
-    /** Devuelve el motivo por el que la jugada es ilegal, o vacío si es legal. */
+    /** Vacío si la jugada es legal. */
     public Optional<String> motivoDeIlegalidad(Tablero tablero, Color turno,
                                                Posicion origen, Posicion destino) {
         Optional<String> motivoOrigen = motivoDeOrigenInvalido(tablero, turno, origen);
@@ -36,10 +35,7 @@ public class ValidadorDeJugadas {
         return Optional.empty();
     }
 
-    /**
-     * Devuelve por qué el jugador de turno no puede mover desde {@code origen} (fuera del
-     * tablero, casilla vacía o pieza rival), o vacío si ahí hay una pieza suya.
-     */
+    /** Revisa solo el origen: fuera del tablero, casilla vacía o pieza rival. */
     public Optional<String> motivoDeOrigenInvalido(Tablero tablero, Color turno, Posicion origen) {
         if (!tablero.contiene(origen)) {
             return Optional.of("Posición fuera del tablero");
@@ -58,7 +54,7 @@ public class ValidadorDeJugadas {
         return motivoDeIlegalidad(tablero, turno, origen, destino).isEmpty();
     }
 
-    /** true si el jugador tiene al menos una jugada legal (base para mate y ahogado). */
+    /** Base para detectar mate y ahogado. */
     public boolean tieneMovimientoLegal(Tablero tablero, Color color) {
         for (Posicion origen : tablero.posicionesDe(color)) {
             Pieza pieza = tablero.obtenerPieza(origen);

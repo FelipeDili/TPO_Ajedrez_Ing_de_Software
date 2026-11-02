@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Bloque reutilizable: avanza en línea recta por cada dirección hasta chocar con el borde,
- * una pieza propia (se detiene antes) o una enemiga (puede capturarla y se detiene).
+ * Avanza en línea recta hasta el borde o una pieza: se detiene antes de una propia y puede capturar
+ * una rival.
  */
 public class MovimientoDeslizante implements MovimientoEstrategia {
 

@@ -3,10 +3,7 @@ package ajedrez.core.modelo;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Pieza genérica: tiene color y DELEGA su forma de moverse en una estrategia (composición
- * sobre herencia). No existe una subclase por tipo de pieza.
- */
+/** Composición sobre herencia: una sola clase Pieza que delega su movimiento en una estrategia. */
 public class Pieza {
 
     private final Color color;
@@ -34,7 +31,7 @@ public class Pieza {
         return esRey;
     }
 
-    /** Carácter para dibujar la pieza: mayúscula si es blanca, minúscula si es negra. */
+    /** Mayúscula si es blanca, minúscula si es negra. */
     public char representacion() {
         return color == Color.BLANCAS ? simbolo : Character.toLowerCase(simbolo);
     }
@@ -55,16 +52,13 @@ public class Pieza {
         return estrategia.esIrreversible();
     }
 
-    /**
-     * true si al llegar a {@code destino} la pieza se promociona: su estrategia lo permite y
-     * es la última fila del lado rival. Se calcula con el tamaño del tablero, no con un 8 fijo.
-     */
+    /** Usa la última fila del tablero que toque, no un 8 fijo. */
     public boolean promocionaEn(Posicion destino, Tablero tablero) {
         int ultimaFila = color == Color.BLANCAS ? tablero.filas() - 1 : 0;
         return estrategia.promociona() && destino.fila() == ultimaFila;
     }
 
-    /** true si todavía puede enrocar con el rey: es una torre que nunca se movió. */
+    /** Una torre que nunca se movió. */
     public boolean puedeEnrocar() {
         return estrategia.enroca() && !seHaMovido();
     }

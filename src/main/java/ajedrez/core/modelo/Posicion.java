@@ -1,12 +1,9 @@
 package ajedrez.core.modelo;
 
-/**
- * Coordenada de una casilla. Fila 0 = fila "1" del ajedrez (lado de las blancas),
- * columna 0 = columna "a". Es inmutable, así que se puede pasar y comparar sin riesgo.
- */
+/** Fila 0 = fila "1" del ajedrez (lado de las blancas), columna 0 = columna "a". */
 public record Posicion(int fila, int columna) {
 
-    /** Crea una posición desde notación algebraica, por ejemplo "e2". */
+    /** Desde notación algebraica, por ejemplo "e2". */
     public static Posicion de(String notacion) {
         if (notacion == null) {
             throw new IllegalArgumentException("La notación no puede ser nula");

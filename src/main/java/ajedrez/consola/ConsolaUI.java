@@ -10,24 +10,21 @@ import java.io.PrintStream;
 import java.util.Map;
 
 /**
- * Adaptador de salida: dibuja el tablero y los avisos en la consola. Depende del núcleo, no
- * al revés. El núcleo solo conoce letras ('P', 'T'...); acá se traducen a símbolos Unicode,
- * así que cambiar el aspecto no obliga a tocar ninguna regla del juego.
+ * Adaptador de salida: dibuja el tablero y los avisos. El núcleo solo conoce letras ('P', 'T'...);
+ * los símbolos se eligen acá.
  */
 public class ConsolaUI implements NotificadorUI {
 
     private static final String CSI = "\u001B[";
     private static final String RESET = CSI + "0m";
 
-    // Paleta ANSI de 256 colores: tonos de madera con buen contraste para ambos bandos.
     private static final int CASILLA_CLARA = 137;
     private static final int CASILLA_OSCURA = 94;
     private static final int PIEZA_BLANCA = 231;
     private static final int PIEZA_NEGRA = 16;
 
-    // Huecos para blancas y rellenos para negras, además del color. Así los bandos se distinguen
-    // aunque la terminal no respete el color: Windows dibuja algunos símbolos como emoji, y la
-    // terminal de VS Code ajusta el color del texto según el fondo de cada casilla.
+    // Huecos para blancas y rellenos para negras: así los bandos se distinguen aunque la terminal
+    // no respete el color (Windows dibuja algunos símbolos como emoji).
     private static final Map<Character, String> SIMBOLOS_BLANCAS = Map.of(
             'P', "♙",
             'T', "♖",
@@ -76,8 +73,6 @@ public class ConsolaUI implements NotificadorUI {
     public void alFinDePartida(String resultado) {
         salida.println(estilo("1;36", "*** Fin de la partida: " + resultado + " ***"));
     }
-
-    // ---------- Dibujo ----------
 
     private void dibujarAscii(Tablero tablero) {
         for (int fila = tablero.filas() - 1; fila >= 0; fila--) {

@@ -12,9 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Adaptador de entrada: lee lo que escribe el jugador durante una partida y lo traduce a
- * pedidos al núcleo. Solo interpreta texto y conversa con el jugador; si una jugada es legal
- * lo decide siempre el núcleo.
+ * Adaptador de entrada: traduce lo que escribe el jugador a pedidos al núcleo, que es quien decide
+ * si una jugada es legal.
  */
 public class PartidaConsola {
 
@@ -41,7 +40,7 @@ public class PartidaConsola {
         this.ui = ui;
     }
 
-    /** Juega la partida; devuelve false si se cerró la entrada y hay que terminar el programa. */
+    /** Devuelve false si se cerró la entrada y hay que terminar el programa. */
     public boolean jugar() throws IOException {
         salida.println("Comandos: mover, deshacer, rehacer, ayuda, salir (o jugá directo 'e2 e4').");
         partida.iniciar();
@@ -73,10 +72,7 @@ public class PartidaConsola {
         }
     }
 
-    /**
-     * El prompt refleja la fase (State): con la partida terminada ya no hay turno, solo
-     * se puede deshacer o salir.
-     */
+    /** Con la partida terminada ya no hay turno: solo se puede deshacer o salir. */
     String prompt() {
         if (partida.estaTerminada()) {
             return "[terminada: deshacer o salir] > ";
@@ -84,10 +80,7 @@ public class PartidaConsola {
         return "[" + partida.turnoActual().name().toLowerCase() + "] > ";
     }
 
-    /**
-     * Jugada guiada en dos pasos. Antes de pedir el destino, el núcleo confirma que en el
-     * origen hay una pieza del jugador de turno, para no hacer escribir de más.
-     */
+    /** Jugada guiada: avisa si el origen no sirve antes de pedir el destino. */
     private void procesarMover() throws IOException {
         if (partida.estaTerminada()) {
             ui.alError("La partida terminó: solo se puede deshacer o salir.");
@@ -110,8 +103,8 @@ public class PartidaConsola {
     }
 
     /**
-     * Pide una casilla; devuelve null si el usuario la deja vacía (cancela), se cierra la
-     * entrada o lo que escribió no es una casilla (en ese caso avisa).
+     * Devuelve null si el usuario cancela con Enter, se cierra la entrada o no escribió una
+     * casilla.
      */
     private Posicion preguntarCasilla(String pregunta) throws IOException {
         salida.print(pregunta);
@@ -137,7 +130,6 @@ public class PartidaConsola {
         enviarJugada(Posicion.de(m.group(1)), Posicion.de(m.group(2)));
     }
 
-    /** Manda la jugada al núcleo; si lleva un peón a la última fila, antes pregunta en qué convertirlo. */
     private void enviarJugada(Posicion origen, Posicion destino) throws IOException {
         Promocion promocion = Promocion.DAMA;
         if (partida.requierePromocion(origen, destino)) {
@@ -163,7 +155,6 @@ public class PartidaConsola {
         }
     }
 
-    /** Traduce la respuesta del jugador ("c" o "caballo") a una promoción, o null si no se entiende. */
     static Promocion promocionDeLetra(String respuesta) {
         return switch (respuesta) {
             case "d", "dama", "reina" -> Promocion.DAMA;
