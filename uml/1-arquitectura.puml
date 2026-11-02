@@ -57,7 +57,7 @@ package "ajedrez.core.partida  (NÚCLEO)" #FFF8EC {
     + alFinDePartida(resultado : String) : void
   }
   class Partida <<game manager>> {
-    + {static} LIMITE_ESTANDAR_MEDIOS_MOVIMIENTOS : int = 100
+    - {static} LIMITE_ESTANDAR_MEDIOS_MOVIMIENTOS : int = 100
     - limiteMedioMovimientos : int
     - historial : Deque<Registro>
     - deshechas : Deque<Jugada>
