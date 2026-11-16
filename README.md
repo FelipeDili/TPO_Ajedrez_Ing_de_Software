@@ -1,15 +1,38 @@
 # Ajedrez en Java — TPO Ingeniería de Software
 
-## Cómo correrlo
+## Para probarlo rápido
 
-Requiere JDK 17+ y Maven.
+Con una terminal abierta en esta carpeta y Java 17 o superior instalado, alcanza con:
 
 ```
-mvn test                                       # tests del núcleo
-mvn compile
-java -cp target/classes ajedrez.consola.Main   # jugar por consola (colores + Unicode)
-java -cp target/classes ajedrez.consola.Main --ascii   # versión simple, sin colores
+java -jar ejecutable/ajedrez.jar
 ```
+
+Si la consola no muestra bien las piezas o los colores, usar `java -jar ejecutable/ajedrez.jar --ascii`.
+Si el jar no arranca, `bash jugar.sh` (Linux/macOS) o `jugar.bat` (Windows) compilan y corren solos.
+Dentro del programa: opción `1` para empezar y jugadas como `e2 e4`.
+
+## Cómo correrlo (detalle)
+
+Requiere JDK 17 o superior (verificar con `java -version`). Hay tres formas, de la más simple a la más completa:
+
+1. **Jar ejecutable (sin compilar):**
+   ```
+   java -jar ejecutable/ajedrez.jar            # colores + Unicode
+   java -jar ejecutable/ajedrez.jar --ascii    # versión simple, sin colores
+   ```
+2. **Compilando desde el código, sin Maven** (solo necesita el JDK):
+   ```
+   bash jugar.sh          # Linux / macOS / Git Bash
+   jugar.bat              # Windows (cmd o PowerShell)
+   ```
+   Ambos aceptan `--ascii`.
+3. **Con Maven:**
+   ```
+   mvn test                                          # tests del núcleo
+   mvn package                                       # genera target/ajedrez-1.0.0.jar
+   java -jar target/ajedrez-1.0.0.jar
+   ```
 
 Al arrancar aparece un menú para empezar la partida o cambiar el tema (colores o ASCII).
 
